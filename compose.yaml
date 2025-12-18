@@ -1,0 +1,21 @@
+services:
+  multi-web:
+    image: ubuntu:25.04
+    build: .
+    ports:
+      - "8082:80"
+    tty: true
+    working_dir: /home/rathena
+    volumes:
+      - ./:/home/rathena
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'ragnarok'
+      MYSQL_USER: 'ragnarok'
+      MYSQL_PASSWORD: 'ragnarok'
+      MYSQL_DATABASE: 'ragnarok'
+    ports:
+        - "3306:3306"
+
