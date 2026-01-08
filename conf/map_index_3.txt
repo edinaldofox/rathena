@@ -1,0 +1,4 @@
+guild_vs1
+guild_vs2
+prtg_cas01
+prtg_cas02

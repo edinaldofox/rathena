@@ -1,12 +1,12 @@
 <img src="doc/logo.png" align="right" height="90" />
 
 # rAthena
-![clang](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_clang.yml?label=clang%20build&logo=llvm) 
+![clang](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_clang.yml?label=clang%20build&logo=llvm)
 ![cmake](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_cmake.yml?label=cmake%20build&logo=cmake)
-![gcc](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_gcc.yml?label=gcc%20build&logo=gnu) 
-![ms](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_msbuild.yml?label=ms%20build&logo=visualstudio) 
-![GitHub](https://img.shields.io/github/license/rathena/rathena.svg) 
-![commit activity](https://img.shields.io/github/commit-activity/w/rathena/rathena) 
+![gcc](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_gcc.yml?label=gcc%20build&logo=gnu)
+![ms](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_msbuild.yml?label=ms%20build&logo=visualstudio)
+![GitHub](https://img.shields.io/github/license/rathena/rathena.svg)
+![commit activity](https://img.shields.io/github/commit-activity/w/rathena/rathena)
 ![GitHub repo size](https://img.shields.io/github/repo-size/rathena/rathena.svg)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rathena/rathena)
 
@@ -52,7 +52,7 @@ Application | Name
 ------|------
 Database | [MySQL Workbench 5 or newer](http://www.mysql.com/downloads/workbench/)
 
-## 2. Installation 
+## 2. Installation
 
 ### Full Installation Instructions
   * [Windows](https://github.com/rathena/rathena/wiki/Install-on-Windows)
@@ -79,3 +79,10 @@ Details on how to contribute to rAthena can be found in [CONTRIBUTING.md](https:
 
 ## 6. License
 Copyright (c) rAthena Development Team - Licensed under [GNU General Public License v3.0](https://github.com/rathena/rathena/blob/master/LICENSE)
+
+## 7. Start serve
+```
+./login-server &
+./char-server &
+./map-server
+```
