@@ -1,21 +1,42 @@
 services:
-  multi-web:
-    image: ubuntu:25.04
-    build: .
-    ports:
-      - "8082:80"
-    tty: true
-    working_dir: /home/rathena
-    volumes:
-      - ./:/home/rathena
-  db:
-    image: mysql
-    restart: always
+  rathena:
+    build:
+      context: .
+    container_name: rathena-server
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      MYSQL_ROOT_PASSWORD: 'ragnarok'
-      MYSQL_USER: 'ragnarok'
-      MYSQL_PASSWORD: 'ragnarok'
-      MYSQL_DATABASE: 'ragnarok'
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ragnarok
+      DB_USER: ragnarok
+      DB_PASSWORD: ragnarok
     ports:
-        - "3306:3306"
+      - "6900:6900"
+      - "6121:6121"
+      - "5121:5121"
+    restart: unless-stopped
+  db:
+    image: mariadb:10.11
+    container_name: rathena-db
+    environment:
+      MARIADB_ROOT_PASSWORD: ragnarok
+      MARIADB_DATABASE: ragnarok
+      MARIADB_USER: ragnarok
+      MARIADB_PASSWORD: ragnarok
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./sql-files/main.sql:/docker-entrypoint-initdb.d/01-main.sql:ro
+      - ./sql-files/logs.sql:/docker-entrypoint-initdb.d/02-logs.sql:ro
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-uroot", "-pragnarok", "--silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
 
+volumes:
+  mariadb_data:

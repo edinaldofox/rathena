@@ -1,0 +1,15 @@
+.git
+.github
+.vs
+log
+*.o
+*.a
+login-server
+char-server
+map-server
+web-server
+*_fifo
+.login-server.pid
+.char-server.pid
+.map-server.pid
+.web-server.pid

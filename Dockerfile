@@ -1,10 +1,28 @@
-FROM ubuntu:25.04
+FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y
-#RUN apt-get install -y git make gcc g++ zlib1g-dev libpcre3-dev nano
+ENV DEBIAN_FRONTEND=noninteractive
 
-#RUN apt-get install -y git make gcc g++ zlib1g-dev libpcre3-dev nano build-essential zlib1g-dev mysql-client mysql-server
-RUN apt-get install -y git make libmariadb-dev libmysqlclient-dev libmariadbclient-dev-compat gcc g++ zlib1g-dev libpcre3-dev
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bash \
+        build-essential \
+        ca-certificates \
+        libmariadb-dev \
+        libmariadb-dev-compat \
+        libpcre3-dev \
+        mariadb-client \
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/home/startDocker.sh"]
+WORKDIR /opt/rathena
 
+COPY . .
+
+RUN chmod +x startDocker.sh \
+    && ./configure \
+    && make clean \
+    && make server
+
+EXPOSE 6900 6121 5121
+
+ENTRYPOINT ["./startDocker.sh"]

@@ -86,3 +86,24 @@ Copyright (c) rAthena Development Team - Licensed under [GNU General Public Lice
 ./char-server &
 ./map-server
 ```
+
+## 8. Docker Compose
+```bash
+docker compose up --build -d
+```
+
+Services exposed by default:
+- `6900` login-server
+- `6121` char-server
+- `5121` map-server
+- `3306` MariaDB
+
+Default credentials created on the first database boot:
+- Game login: `s1` / `p1`
+- Database: `ragnarok` / `ragnarok`
+
+Useful commands:
+```bash
+docker compose logs -f rathena
+docker compose down
+```
