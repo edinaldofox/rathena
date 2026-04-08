@@ -16,6 +16,16 @@ services:
       - "6900:6900"
       - "6121:6121"
       - "5121:5121"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pgrep -f './login-server' >/dev/null && pgrep -f './char-server' >/dev/null && pgrep -f './map-server' >/dev/null && ss -ltn '( sport = :6900 or sport = :6121 or sport = :5121 )' | grep -q ':6900' && ss -ltn '( sport = :6900 or sport = :6121 or sport = :5121 )' | grep -q ':6121' && ss -ltn '( sport = :6900 or sport = :6121 or sport = :5121 )' | grep -q ':5121'"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     restart: unless-stopped
   db:
     image: mariadb:10.11
