@@ -30,6 +30,7 @@
 #include "loginclif.hpp"
 #include "logincnslif.hpp"
 #include "loginlog.hpp"
+#include "password_hash.hpp"
 
 using namespace rathena;
 using namespace rathena::server_login;
@@ -251,7 +252,8 @@ int32 login_mmo_auth_new(const char* userid, const char* pass, const char sex, c
 	memset(&acc, '\0', sizeof(acc));
 	acc.account_id = -1; // assigned by account db
 	safestrncpy(acc.userid, userid, sizeof(acc.userid));
-	safestrncpy(acc.pass, pass, sizeof(acc.pass));
+	std::string hashed_password = password_hash_make( pass );
+	safestrncpy(acc.pass, hashed_password.c_str(), sizeof(acc.pass));
 	acc.sex = sex;
 	safestrncpy(acc.email, "a@a.com", sizeof(acc.email));
 	acc.expiration_time = ( login_config.start_limited_time != -1 ) ? time(nullptr) + login_config.start_limited_time : 0;
@@ -357,6 +359,12 @@ int32 login_mmo_auth(struct login_session_data* sd, bool isServer) {
 		return 1; // 1 = Incorrect Password
 	}
 
+	if( sd->passwdenc == 0 && !password_hash_is_modern( acc.pass ) ){
+		std::string upgraded_password = password_hash_make( sd->passwd );
+		safestrncpy( acc.pass, upgraded_password.c_str(), sizeof( acc.pass ) );
+		accounts->save( accounts, &acc, false );
+	}
+
 	if( acc.expiration_time != 0 && acc.expiration_time < time(nullptr) ) {
 		ShowNotice("Connection refused (account: %s, expired ID, ip: %s)\n", sd->userid, ip);
 		return 2; // 2 = This ID is expired
@@ -442,8 +450,16 @@ int32 login_mmo_auth(struct login_session_data* sd, bool isServer) {
  * @return true if matching else false
  */
 bool login_check_password( struct login_session_data& sd, struct mmo_account& acc ){
+	if( password_hash_is_modern( acc.pass ) ){
+		if( sd.passwdenc != 0 ){
+			return false;
+		}
+
+		return password_hash_matches( sd.passwd, acc.pass );
+	}
+
 	if( sd.passwdenc == 0 ){
-		return 0 == strcmp( sd.passwd, acc.pass );
+		return password_hash_matches( sd.passwd, acc.pass );
 	}
 
 	// password mode set to 1 -> md5(md5key, refpass) enable with <passwordencrypt></passwordencrypt>

@@ -11,6 +11,7 @@ RUN apt-get update \
         iproute2 \
         libmariadb-dev \
         libmariadb-dev-compat \
+        libssl-dev \
         libpcre3-dev \
         mariadb-client \
         procps \

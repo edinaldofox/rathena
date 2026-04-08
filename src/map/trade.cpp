@@ -396,6 +396,15 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 		return;
 	}
 
+	// Never allow items that are currently equipped to enter the trade window.
+	// The commit path only treats equipped ammo as a special case, which creates
+	// an unnecessary surface for state desync around relog/equipment changes.
+	if( item->equip ) {
+		clif_displaymessage(sd->fd, msg_txt(sd,260));
+		clif_tradeitemok(*sd, index, EXITEM_ADD_FAILED_CLOSED);
+		return;
+	}
+
 	if( ((item->bound == BOUND_ACCOUNT || item->bound > BOUND_GUILD) || (item->bound == BOUND_GUILD && sd->status.guild_id != target_sd->status.guild_id)) && !pc_can_give_bounded_items(sd) ) { // Item Bound
 		clif_displaymessage(sd->fd, msg_txt(sd,293));
 		clif_tradeitemok(*sd, index, EXITEM_ADD_FAILED_CLOSED);

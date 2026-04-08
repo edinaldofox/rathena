@@ -14,6 +14,7 @@
 #include <common/timer.hpp>
 
 #include "login.hpp"
+#include "password_hash.hpp"
 
 /**
  * Login-server console help: starting option info.
@@ -71,17 +72,12 @@ int32 cnslif_parse(const char* buf){
 		}
 		if( strcmpi("create",type) == 0 )
 		{
-			char username[NAME_LENGTH], password[NAME_LENGTH], md5password[32+1], sex; //23+1 plaintext 32+1 md5
-			bool md5 = 0;
+			char username[NAME_LENGTH], password[NAME_LENGTH], sex;
 			if( sscanf(command, "%23s %23s %c", username, password, &sex) < 3 || strnlen(username, sizeof(username)) < 4 || strnlen(password, sizeof(password)) < 1 ){
 				ShowWarning("Console: Invalid parameters for '%s'. Usage: %s <username> <password> <sex:F/M>\n", type, type);
 				return 0;
 			}
-			if( login_config.use_md5_passwds ){
-				MD5_String(password,md5password);
-				md5 = 1;
-			}
-			if( login_mmo_auth_new(username,(md5?md5password:password), TOUPPER(sex), "0.0.0.0") != -1 ){
+			if( login_mmo_auth_new(username, password, TOUPPER(sex), "0.0.0.0") != -1 ){
 				ShowError("Console: Account creation failed.\n");
 				return 0;
 			}
